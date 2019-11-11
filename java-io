@@ -21,9 +21,21 @@ public int read(byte b[]) throws IOException;
 public int read(byte b[], int off, int len) throws IOException;
 
 /**
-* 从流中读取并丢弃n长度的字节，返回被跳过的字节数
+* 从流中读取并丢弃n（最大可跳过为2048）长度的字节，返回被跳过的字节数
 * 如果n<=0，不跳过字节，返回0
 * 当跳过的长度大于到刘末尾的长度时，返回的数将小于n
 */
 public long skip(long n) throws IOException
 
+/**
+* 返回一个估算的下一次调用当前流中方法不会被阻塞且可以被读取或者跳过的字节数目，
+* inputStream类该方法一直返回0  
+*/
+public int available() throws IOException；
+
+/**
+* 关闭当前流，并释放所有分配给当前流的系统资源
+*/
+public void close() throws IOException {}
+
+public synchronized void mark(int readlimit) {}
