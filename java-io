@@ -16,6 +16,14 @@ public int read(byte b[]) throws IOException;
 * 该方法阻塞读取直到数据可读或者流的尾部或者发生异常
 * 如果len=0，不读取数据，返回0，否则尝试读取一个字符，如果因为到了流尾部，没有数据刻度，则返回-1，否则该方法至少读取一个字符
 * 假设读取k长度数据，则数据存储在b[off]~b[off+k-1]中，b[0]~b[off-1]和b[off+k]~b[b.length-1]中不受影响
-* 该方法简单的重复调用read()方法，如果第一次调用read()报错，直接抛出
+* 该方法简单的重复调用read()方法，如果第一次调用read()报错，直接抛出，第二次及后续调用发生异常直接返回异常发生前已读数据长度，异常发生前读取数据写入b中
 */
 public int read(byte b[], int off, int len) throws IOException;
+
+/**
+* 从流中读取并丢弃n长度的字节，返回被跳过的字节数
+* 如果n<=0，不跳过字节，返回0
+* 当跳过的长度大于到刘末尾的长度时，返回的数将小于n
+*/
+public long skip(long n) throws IOException
+
