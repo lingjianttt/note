@@ -1,3 +1,17 @@
+1.同步阻塞io（blocking io）
+	用户进程从内核去调用（读取）数据，调用时处于同步等待状态，内核去准备数据、读取数据返回给用户进程（network io会更慢），直至读取数据返回成功后用户进程才继续后续的工作
+2、非租塞io（nonblocking io）
+	用户线程从内核读取数据，如果内核没有准备好会直接返回一个error，用户进程这时候不必阻塞住（可以去做其它工作），轮询去读取内核的数据，内核会在数据准备好后用户第一次读取时，将数据拷贝到用户内存空间，仅在这部分存在blocking
+3、io多路复用 IO multiplexing
+	采用selector/epoll模式，用户进程向内核发送一个selector的读取请求，然后阻塞，内核会监听所有selector中的链接的情况，当其中一个数据准备好了之后，就会通知对应的用户进程可读取，用户再去读取数据，内核会立即拷贝数据到用户进程
+
+4、signal driven IO
+
+5、异步io，asynchronous IO。
+	用户进程从内核读取数据，内核立即返回并准备数据，这时候用户进程可以继续工作，当内核完成了准备和数据拷贝到用户内存的工作后，发送一个信号给用户进程的handler，通知其数据已读取完毕，这是唯一的纯异步模式的io读取
+
+
+
 public abstract class InputStream implements Closeable
 
 /**
@@ -126,3 +140,66 @@ public void flush() throws IOException ；
 public void close() throws IOException
 
 public abstract class Writer implements Appendable, Closeable, Flushable
+
+/**
+* 写入一个字符，c的低16位将被写入到输出流，高16位被忽略
+*/
+public void write(int c) throws IOException ；
+
+/**
+* 写入一个字符数组
+*/
+public void write(char cbuf[]) throws IOException；
+
+/**
+* 写入字符数据的一部分
+*/
+abstract public void write(char cbuf[], int off, int len) throws IOException
+
+/**
+* 写入一个字符串
+*/
+public void write(String str) throws IOException；
+
+/**
+* 写入字符串一部分
+*/
+public void write(String str, int off, int len) throws IOException
+
+/**
+* 将字符数组csq写入输出流
+*/
+public Writer append(CharSequence csq) throws IOException ；
+
+/**
+* 将csq部分写入到输出流，从start开始，end结尾
+*/
+public Writer append(CharSequence csq, int start, int end) throws IOException 
+
+/**
+* 将指定字符写入到输出流
+*/
+public Writer append(char c) throws IOException  ；
+
+/**
+* 刷新流，
+*/
+abstract public void flush() throws IOException；
+
+/**
+* 关闭流
+*/
+abstract public void close() throws IOException；
+
+public abstract class Reader implements Readable, Closeable 
+
+/**
+* 尝试读取字符到指定的字符串缓存，返回实际读取的字符数
+* 
+*/
+public int read(java.nio.CharBuffer target) throws IOException ；
+
+/**
+* 
+*/
+public int read() throws IOException；
