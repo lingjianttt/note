@@ -5,7 +5,7 @@
 3、io多路复用 IO multiplexing
 	采用selector/epoll模式，用户进程向内核发送一个selector的读取请求，然后阻塞，内核会监听所有selector中的链接的情况，当其中一个数据准备好了之后，就会通知对应的用户进程可读取，用户再去读取数据，内核会立即拷贝数据到用户进程
 
-4、signal driven IO
+4、signal driven IO，用的较少
 
 5、异步io，asynchronous IO。
 	用户进程从内核读取数据，内核立即返回并准备数据，这时候用户进程可以继续工作，当内核完成了准备和数据拷贝到用户内存的工作后，发送一个信号给用户进程的handler，通知其数据已读取完毕，这是唯一的纯异步模式的io读取
@@ -200,6 +200,41 @@ public abstract class Reader implements Readable, Closeable
 public int read(java.nio.CharBuffer target) throws IOException ；
 
 /**
-* 
+* 读取一个字符，返回为int类型，返回0~65535之间，如果是流尾部，则返回-1
 */
 public int read() throws IOException；
+
+/**
+* 读取字符到字符数组
+*/
+public int read(char cbuf[]) throws IOException ；
+
+/**
+* 读取字符放入数组中一部分
+*/
+abstract public int read(char cbuf[], int off, int len) throws IOException;
+
+/**
+* 跳过字符
+*/
+public long skip(long n) throws IOException；
+
+/**
+* 查询当前流是否已经准备好被读取
+*/
+public boolean ready() throws IOException；
+
+/**
+* 查询是否支持mark操作
+*/
+public boolean markSupported()；
+
+/**
+* 设置一个标志位，后续调用reset方法可以从标记位重新开始读取
+*/
+public void mark(int readAheadLimit) throws IOException；
+
+/**
+* 复位到最后一次mark的位置,如果流没有被标记过，则会复位到一个比较合适的位置，例如流的开始处
+*/
+public void reset() throws IOException；
