@@ -1,4 +1,4 @@
-InputStream
+public abstract class InputStream implements Closeable
 
 /**
 * 返回流中下一个字节，0~255之间的int，没有数据则返回-1
@@ -38,4 +38,91 @@ public int available() throws IOException；
 */
 public void close() throws IOException {}
 
+/**
+* 在当前流中标记一个标志位，后续调用reset()方法时可以重置读取位点到标记位，重复读取标记位之后已读的部分，
+* readlimit表示在标记位失效前允许读取的字节数
+* 无论如何，当流在调用reset方法之前已经读取了超过readlimit数据的字节，就不需要继续保存已经读取的数据
+*/
 public synchronized void mark(int readlimit) {}
+
+/**
+* 复位到最后一次mark方法标记的位置，
+* <p> The general contract of <code>reset</code> is:
+     *
+     * <ul>
+     * <li> If the method <code>markSupported</code> returns
+     * <code>true</code>, then:
+     *
+     *     <ul><li> If the method <code>mark</code> has not been called since
+     *     the stream was created, or the number of bytes read from the stream
+     *     since <code>mark</code> was last called is larger than the argument
+     *     to <code>mark</code> at that last call, then an
+     *     <code>IOException</code> might be thrown.
+     *
+     *     <li> If such an <code>IOException</code> is not thrown, then the
+     *     stream is reset to a state such that all the bytes read since the
+     *     most recent call to <code>mark</code> (or since the start of the
+     *     file, if <code>mark</code> has not been called) will be resupplied
+     *     to subsequent callers of the <code>read</code> method, followed by
+     *     any bytes that otherwise would have been the next input data as of
+     *     the time of the call to <code>reset</code>. </ul>
+     *
+     * <li> If the method <code>markSupported</code> returns
+     * <code>false</code>, then:
+     *
+     *     <ul><li> The call to <code>reset</code> may throw an
+     *     <code>IOException</code>.
+     *
+     *     <li> If an <code>IOException</code> is not thrown, then the stream
+     *     is reset to a fixed state that depends on the particular type of the
+     *     input stream and how it was created. The bytes that will be supplied
+     *     to subsequent callers of the <code>read</code> method depend on the
+     *     particular type of the input stream. </ul></ul>
+*/
+public synchronized void reset() throws IOException
+
+/**
+* 测试当前流是否支持mark和reset操作，该值对于当前流的实例，该值为固定不变的值，inputstream该方法返回false
+*/
+public boolean markSupported();
+
+
+public abstract class OutputStream implements Closeable, Flushable
+
+/**
+* 将指定的字节写入当前输出流中，一般规范是写入一个字节即b的低8位会被写入输出流，高24位将被忽略
+*/
+public abstract void write(int b) throws IOException;
+
+/**
+* 直接调用write(b, 0, b.l
+*/
+public void write(byte b[]) throws IOException；
+
+/**
+* 从b中的off位置开始，顺序写入len长度的字节到当前输出流，
+* 该方法简单的去调用write(int b)去顺序写入，如果len为负数或者off+length>b.length，抛出IndexOutOfBoundsException
+*/
+public void write(byte b[], int off, int len) throws IOException;
+
+/**
+* 刷新当前输出流，并强制任何的缓存字节被写入到输出流
+* 一般约定：如果之前有被缓存的字节流在调用flush方法后应该被立即刷新到他们将去的地方
+* outputStream中该方法不做任何事
+* <p>
+     * If the intended destination of this stream is an abstraction provided by
+     * the underlying operating system, for example a file, then flushing the
+     * stream guarantees only that bytes previously written to the stream are
+     * passed to the operating system for writing; it does not guarantee that
+     * they are actually written to a physical device such as a disk drive.
+     * <p>
+*/
+public void flush() throws IOException ；
+
+/**
+* 关闭当前输出流并释放分配到的所有系统资源
+* 关闭不能在操作流，也不能被再打开
+*/
+public void close() throws IOException
+
+public abstract class Writer implements Appendable, Closeable, Flushable
