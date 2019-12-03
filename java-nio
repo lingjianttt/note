@@ -20,7 +20,7 @@ Java NIO的缓冲导向方法略有不同。数据读取到一个它稍后处理
    这四个属性之间总是遵循以下关系:
 0 <= mark <= position <= limit <= capacity
 
-
+􏳄阻􏳅􏳆式
 
 public abstract class Buffer {
   // 返回当前缓存的容量大小，该值设定后永远不会被改变
