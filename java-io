@@ -11,8 +11,16 @@
 	用户进程从内核读取数据，内核立即返回并准备数据，这时候用户进程可以继续工作，当内核完成了准备和数据拷贝到用户内存的工作后，发送一个信号给用户进程的handler，通知其数据已读取完毕，这是唯一的纯异步模式的io读取
 
 
+
 jdk1.4 是使用的 select/poll 模型
 jdk1.5 以后把select/poll 改为了epoll模型
+
+名词解释：
+用户空间：
+内核空间
+
+
+read()进行系统调用，系统会去找寻磁盘上的内容，将磁盘内容读取到内核缓冲区，
 
 public abstract class InputStream implements Closeable
 
