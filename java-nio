@@ -1,0 +1,36 @@
+
+NIO和IO最大的区别是数据打包和传输方式。IO是以流的方式处理数据，而NIO是以块的方式处理数据。
+
+2.1 缓冲区
+概念上，缓冲区是包在一个对象内的基本数据元素数组。Buffer 类相比一个简单数组的优点 是它将关于数据的数据内容和信息包含在一个单一的对象中。Buffer 类以及它专有的子类定义了 一个用于处理数据缓冲区的 API。
+2.1.1  Buffer
+所有的缓冲区都具有四个属性来􏰉供关于其所包含的数据元素的信息。它们是:
+
+容量(Capacity)
+   缓冲区能够容纳的数据元素的最大数量。这一容量在缓冲区创建时被设定，并且永远不能被改变。
+上限(Limit)
+   缓冲区的第一个不能被读或写的元素。或者说，缓冲区中现存元素的计数。
+位置(Position)
+   下一个要被读或写的元素的索引。位置会自动由相应的 get( )和 put( )函数更新。 
+标记(Mark)
+   一个备忘位置。调用mark( )来设定mark=postion。调用reset( )设定position= mark。标记在设定前是未定义的(undefined)。
+   这四个属性之间总是遵循以下关系:
+0 <= mark <= position <= limit <= capacity
+
+
+
+public abstract class Buffer {
+  // 返回当前缓存的容量大小，该值设定后永远不会被改变
+  public final int capacity( )
+  // 返回当前的缓存的位置
+  public final int position( )
+  public final Buffer position (int newPositio public final int limit( )
+  public final int limit( )
+  public final Buffer limit (int newLimit) public final Buffer mark( )
+  public final Buffer reset( )
+  public final Buffer clear( )
+  public final Buffer flip( )
+  public final Buffer rewind( )
+  public final int remaining( )
+  public final boolean hasRemaining( ) public abstract boolean isReadOnly( );
+}
