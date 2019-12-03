@@ -1,5 +1,8 @@
 
-NIO和IO最大的区别是数据打包和传输方式。IO是以流的方式处理数据，而NIO是以块的方式处理数据。
+面向流与面向缓冲
+Java NIO和IO之间第一个最大的区别是，IO是面向流的，NIO是面向缓冲区的。 
+Java IO面向流意味着每次从流中读一个或多个字节，直至读取所有字节，它们没有被缓存在任何地方。此外，它不能前后移动流中的数据。如果需要前后移动从流中读取的数据，需要先将它缓存到一个缓冲区。 
+Java NIO的缓冲导向方法略有不同。数据读取到一个它稍后处理的缓冲区，需要时可在缓冲区中前后移动。这就增加了处理过程中的灵活性。但是，还需要检查是否该缓冲区中包含所有您需要处理的数据。而且，需确保当更多的数据读入缓冲区时，不要覆盖缓冲区里尚未处理的数据。
 
 2.1 缓冲区
 概念上，缓冲区是包在一个对象内的基本数据元素数组。Buffer 类相比一个简单数组的优点 是它将关于数据的数据内容和信息包含在一个单一的对象中。Buffer 类以及它专有的子类定义了 一个用于处理数据缓冲区的 API。
@@ -24,13 +27,32 @@ public abstract class Buffer {
   public final int capacity( )
   // 返回当前的缓存的位置
   public final int position( )
-  public final Buffer position (int newPositio public final int limit( )
+  // 设置当前位置
+  public final Buffer position (int newPositio)
+  // 返回上限
   public final int limit( )
-  public final Buffer limit (int newLimit) public final Buffer mark( )
+  // 设置上限位置
+  public final Buffer limit (int newLimit) 
+  // 标记一个位置
+  public final Buffer mark( )
+  // 重置到标记位
   public final Buffer reset( )
+  // 换到默认初始化状态
   public final Buffer clear( )
+  // 翻转，读取->写入，写入->读取
   public final Buffer flip( )
+  // 后退
   public final Buffer rewind( )
+  // 剩余可读取长度/数量
   public final int remaining( )
-  public final boolean hasRemaining( ) public abstract boolean isReadOnly( );
+  // 是否还有剩余
+  public final boolean hasRemaining( ) 
+  // 是否是只读的buffer
+  public abstract boolean isReadOnly( );
+}
+
+public interface Channel
+{
+    public boolean isOpen( );
+    public void close( ) throws IOException;
 }
