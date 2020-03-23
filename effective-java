@@ -1,0 +1,93 @@
+
+1、考虑使用静态工厂方法代替构造方法【建议】
+  优点
+  ：
+      a)工厂方法可以有自己的名字，会有语义的变化，方便阅读
+      b)工厂方法不用每次被调用就返回一个新的对象
+      c)工厂方法可以返回任何子类的对象
+      java.util.Collections类的各种静态方法
+      public static <T> Collection<T> unmodifiableCollection(Collection<? extends T> c) {
+        return new UnmodifiableCollection<>(c);
+      }
+      d)返回的对象可以随调用的参数的同步而有不同的变化
+       例：EnumSet的方法，根据数据返回不同的对象，64个以下的RegularEnumSet，64以上的JumboEnumSet实现
+      /**
+     * Creates an empty enum set with the specified element type.
+     *
+     * @param <E> The class of the elements in the set
+     * @param elementType the class object of the element type for this enum
+     *     set
+     * @return An empty enum set of the specified type.
+     * @throws NullPointerException if <tt>elementType</tt> is null
+     */
+    public static <E extends Enum<E>> EnumSet<E> noneOf(Class<E> elementType) {
+        Enum<?>[] universe = getUniverse(elementType);
+        if (universe == null)
+            throw new ClassCastException(elementType + " not an enum");
+
+        if (universe.length <= 64)
+            return new RegularEnumSet<>(elementType, universe);
+        else
+            return new JumboEnumSet<>(elementType, universe);
+    }
+    e)类中包含的方法不一定需要存在
+      例如：jdbc一套的框架，只定义接口，实现留给客户端，服务提供框架一般需要满足3点，服务接口，服务注册API，服务获取API，以及可选的服务提供接口
+      
+  缺点
+    a)没有public或者protected方法，不能被子类实例化
+    b)不容易被编码者找到该方法
+  工厂方法取名大概的列表：
+    from, to, valueOf, intance/getInstance, create/newInstance, getType, newType, type等
+    
+2、当构造方法有多个参数时，考虑使用builder方法【建议】
+  构造方法和静态工厂方法都有个缺点，不能在有多个可选参数时良好的工作，
+  例：
+   NutritionFacts cocaCola = new NutritionFacts();
+   cocaCola.setServingSize(240);
+   cocaCola.setServings(8);
+   cocaCola.setCalories(100);
+   cocaCola.setSodium(35);
+   cocaCola.setCarbohydrate(27);
+  上述对象初始化看着似乎比较简单，而且易读，但是会造成对象构造过程中出现状态不一致的情况
+  NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8)
+           .calories(100).sodium(35).carbohydrate(27).build();
+           
+  类继承中的builder例子
+  // Builder pattern for class hierarchies
+public abstract class Pizza {
+public enum Topping { HAM, MUSHROOM, ONION, PEPPER, SAUSAGE } final Set<Topping> toppings;
+abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings = EnumSet.noneOf(Topping.class); public T addTopping(Topping topping) {
+            toppings.add(Objects.requireNonNull(topping));
+            return self();
+}
+         abstract Pizza build();
+         // Subclasses must override this method to return "this"
+         protected abstract T self();
+      }
+      Pizza(Builder<?> builder) {
+         toppings = builder.toppings.clone(); // See Item 50
+      }
+}
+  build模式一般在构造函数超过1手的时候比较适合采用
+
+3、单例模式的构造【强制】
+  a)私有构造方法加静态初始化
+   // Singleton with static factory
+  public class Elvis {
+  private static final Elvis INSTANCE = new Elvis(); private Elvis() { ... }
+  public static Elvis getInstance() { return INSTANCE; }
+       public void leaveTheBuilding() { ... }
+   }
+ 
+  b)定义一个只有单个元素的Enum
+  // Enum singleton - the preferred approach
+   public enum Elvis {
+       INSTANCE;
+       public void leaveTheBuilding() { ... }
+   }
+
+ 4、不需要实例化的类，添加一个私有的构造方法【强制】
+  例:java.lang.Math
+  
+ 5、宁愿依赖注入，不选硬编码【建议】
+ 
