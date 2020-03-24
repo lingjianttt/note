@@ -90,4 +90,27 @@ abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings 
   例:java.lang.Math
   
  5、宁愿依赖注入，不选硬编码【建议】
- 
+    简单的将依赖的资源传入构造方法
+    // Dependency injection provides flexibility and testability
+    public class SpellChecker {
+       private final Lexicon dictionary;
+       public SpellChecker(Lexicon dictionary) { this.dictionary = Objects.requireNonNull(dictionary);
+        }
+       public boolean isValid(String word) { ... }
+       public List<String> suggestions(String typo) { ... }
+    }
+    上面的方法可以使用，但相对比较僵硬，如果传入一个工厂方法会很好
+    Mosaic create(Supplier<? extends Tile> tileFactory) { ... }
+    有多个资源和依赖，可以考虑static factory和builder的方式,将能获得灵活性、可重用、可测试的好处
+    
+  6、避免创建不必要的对象
+     例：下面简单的对象创建，如果是在循环内部，会造成大量的新对象的创建
+     String s = new String("bikini"); // DON'T DO THIS!
+     对于可重用的、创建代价高昂的对象，
+     
+  7、消除废弃的对象引用
+     无意识的保留
+     
+    
+    
+    
