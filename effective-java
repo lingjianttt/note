@@ -123,7 +123,27 @@ abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings 
     这两个方法的执行不能立刻执行，会带来不稳定和不可预期的结果
     
   9、try-with-resource优先于try-finally
+    // try-with-resources - the the best way to close resources!
+    static String firstLineOfFile(String path) throws IOException {
+       try (BufferedReader br = new BufferedReader(
+               new FileReader(path))) {
+           return br.readLine();
+     } }
+    
+    // try-with-resources on multiple resources - short and sweet
+       static void copy(String src, String dst) throws IOException {
+         try (InputStream   in = new FileInputStream(src);
+              OutputStream out = new FileOutputStream(dst)) {
+            byte[] buf = new byte[BUFFER_SIZE];
+            int n;
+            while ((n = in.read(buf)) >= 0)
+            out.write(buf, 0, n);
+            }
+        }
+     The resulting code is shorter and clearer, and the exceptions that it generates are more useful. 
+     The try- with-resources statement makes it easy to write correct code using resources that must be closed, 
+     which was practically impossible using try-finally.
      
-    
-    
-    
+ II.所有对象共有的方法
+  10.重写equals方法时需要遵守一般的规则
+  
