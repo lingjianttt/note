@@ -146,4 +146,13 @@ abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings 
      
  II.所有对象共有的方法
   10.重写equals方法时需要遵守一般的规则
-  
+    重写equals方法时，必须遵守它的一般约定。
+    反身性:对于任何非空的引用值x,x.equals(x)必须返回true
+    对称性:对于任何非空的引用值x和y，当且仅当y.equals(x)返回true时，x.equals(y)必须返回true
+    传递性:对于任何非空的引用值x,y,z,如果x.equals(y)返回true，y.equals(z)返回true，那么x.equals(z)返回true
+    一致性:对于任何非空的引用值x,y,对于没有修改值的情况下，多次调用x.equals(y)应该返回同样的结果
+    对于所有非空的应用x,x.equals(null)必须返回false
+    
+    
+
+ 
