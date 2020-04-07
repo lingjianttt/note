@@ -157,6 +157,14 @@ abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings 
     如果缺少这个类型检查，并且equals方法传递了一个错误类型的参数，那么equals方法将抛出一个ClassCastException，这违反了equals契约。
     但是instanceof操作符被指定为如果它的第一个操作数为null，则返回false，而不管第二个操作数[JLS, 15.20.2]中出现的是什么类型。
     
-    
+    一般写出一个好的equals方法需要遵守以下几点；
+      * 如果被比较的对象是当前类的引用，可以使用==来校验，如果是的话，返回true，在比较代价比较大的时候，这一步操作是值得的
+      * 使用 instanceof 来检查参数是否具有正确的类型，不是返回false
+      * 将参数转换为正确的类型
+      * 对于对象中每一个有意义的属性，都和参数中对象中相应的属性进行是否相等的判断比较，全部相等返回true，否则false
+      
+  11.当重写equals方法时，一定要重写hashCode方法
+  
+      
 
  
