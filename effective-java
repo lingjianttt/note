@@ -187,5 +187,19 @@ abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings 
     在您编写的每个实例化类中重写Object的toString实现，除非超类已经这样做了。它使类更易于使用，并有助于调试。
     toString方法应该以美观的格式返回对象的简明、有用的描述。
     
-
- 
+  13、谨慎的覆盖clone方法
+    
+   // Copy constructor
+   public Yum(Yum yum) { ... };
+    A copy factory is the static factory (Item 1) analogue of a copy constructor:
+   // Copy factory
+   public static Yum newInstance(Yum yum) { ... };
+   与Cloneable/clone相比，copy构造函数方法及其静态工厂变体有许多优点:它们不依赖于有风险倾向的超语言对象创建机制;
+   他们不要求无法强制遵守几乎没有记录的约定;它们与正确使用final字段没有冲突;它们不会抛出不必要的检查异常;而且不需要转换。
+   
+   考虑到与Cloneable相关的所有问题，新的接口不应该扩展它，新的可扩展类不应该实现它。虽然实现Cloneable对最终类的危害较小，但这应该被看作是一种性能优化，
+   只有在极少数情况下才需要这样做(第67项)。通常，复制功能最好由构造函数或工厂提供。此规则的一个重要例外是数组，最好使用克隆方法复制它。
+   
+   14、考虑实现comparable接口
+   总之，无论何时实现具有合理排序的值类，都应该让该类实现Comparable接口，以便能够轻松地对其实例进行排序、搜索并在基于比较的集合中使用。在比较compareTo方法实现中的字段值时，要避免使用<和>操作符。
+   相反，应该使用封装在原语类中的静态比较方法或比较器接口中的比较器构造方法。
