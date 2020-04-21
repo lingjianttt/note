@@ -260,3 +260,7 @@ abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings 
     @Override public String toString() {
         return "(" + re + " + " + im + "i)";
 } }
+
+  18、组合优先于继承
+  在包中使用继承是安全的，在包中子类和超类实现由相同的程序员控制。在扩展为扩展而专门设计和记录的类时，使用继承也是安全的
+  与方法调用不同，继承违反了封装
