@@ -264,3 +264,4 @@ abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings 
   18、组合优先于继承
   在包中使用继承是安全的，在包中子类和超类实现由相同的程序员控制。在扩展为扩展而专门设计和记录的类时，使用继承也是安全的
   与方法调用不同，继承违反了封装
+  继承只适用于子类确实是超类的子类型的情况。换句话说，只有当两个类之间存在“is-a”关系时，B类才应该扩展a类。
