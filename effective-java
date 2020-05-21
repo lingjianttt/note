@@ -385,3 +385,15 @@ abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings 
   总之，varargs和泛型不能很好地交互，因为varargs功能是在数组之上构建的一个有漏洞的抽象，而数组与泛型具有不同的类型规则。
   虽然泛型变量参数不是类型安全的，但它们是合法的。如果您选择使用泛型(或参数化)varargs参数来编写方法，
   那么首先要确保该方法是类型安全的，然后使用@SafeVarargs对其进行注释可变参数，所以它不是不愉快的使用。
+
+  33.考虑类型安全异构容器
+  考虑一个类，它叫Favorites，该类允许它的客户端存储和获取任意类型的favorite实例。
+  某类型的Class对象将是参数化键的一部分。之所以可以这么做，是因为Class类是泛型的。
+  从字面上来说，类的类型不是简单的Class，而是Class<T>。例如，String.class的类型为Class<String>，Integer.class的类型是Class<Integer>。
+  当一个类的字面文字被传入方法来表达运行时和编译时的类型信息时，它就被称为类型令牌（type token）
+  // Typesafe heterogeneous container pattern - API
+public class Favorites {
+    public <T> void putFavorite(Class<T> type, T instance);
+    public <T> T getFavorite(Class<T> type);
+}
+
