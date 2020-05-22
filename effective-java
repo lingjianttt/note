@@ -387,6 +387,10 @@ abstract static class Builder<T extends Builder<T>> { EnumSet<Topping> toppings 
   那么首先要确保该方法是类型安全的，然后使用@SafeVarargs对其进行注释可变参数，所以它不是不愉快的使用。
 
   33.考虑类型安全异构容器
+  比如，数据库的某一行会有任意多列，如果能用一种类型安全的方式去访问这些列就再好不过了。幸运的是，有个简单的办法可以做到这点。
+  这个办法就是，将键参数化，而不是容器。
+  然后将参数化了的键提交给容器去插入或者获取一个值。用泛型类型系统来保证值的类型与值对应的键的类型相符。
+  
   考虑一个类，它叫Favorites，该类允许它的客户端存储和获取任意类型的favorite实例。
   某类型的Class对象将是参数化键的一部分。之所以可以这么做，是因为Class类是泛型的。
   从字面上来说，类的类型不是简单的Class，而是Class<T>。例如，String.class的类型为Class<String>，Integer.class的类型是Class<Integer>。
@@ -396,4 +400,17 @@ public class Favorites {
     public <T> void putFavorite(Class<T> type, T instance);
     public <T> T getFavorite(Class<T> type);
 }
+  Favorites实例是类型安全的：当你请求一个String时，它永远不会返回个Integer给你。
+  同时它也是异构的：不像普通的map，它里面的所有键都是不同类型的。
+  因而，我们把Favorites类称为类型安全的异构容器。Favorites类的实现非常简单。
 
+  // Typesafe heterogeneous container pattern -implementation
+public class Favorites {
+    private Map<Class<?>, Object> favorites = new HashMap<>();
+    public <T> void putFavorite(Class<T> type, T instance) {
+        favorites.put(Objects.requireNonNull(type), instance);
+    } 
+    public <T> T getFavorite(Class<T> type) {
+        return type.cast(favorites.get(type));
+    }
+}
