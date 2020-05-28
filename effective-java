@@ -414,3 +414,64 @@ public class Favorites {
         return type.cast(favorites.get(type));
     }
 }
+
+  34、用枚举替代int常量
+  幸运的是，有一种更好的方法可以将不同的行为与每个enum常量关联起来:
+  在enum类型中声明一个抽象的apply方法，然后在特定于常量的类主体中为每个常量使用一个具体的方法来覆盖它。这种方法被称为常量特定的方法实现:
+  // Enum type with constant-specific method implementations
+  public enum Operation {
+      PLUS {publicdoubleapply(doublex,doubley){returnx+y;}}, MINUS {public double apply(double x, double y){return x - y;}}, TIMES {public double apply(double x, double y){return x * y;}}, DIVIDE{public double apply(double x, double y){return x / y;}};
+      public abstract double apply(double x, double y);
+   }
+   
+  策略模式的枚举
+   // The strategy enum pattern
+   enum PayrollDay {
+       MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY,
+       SATURDAY(PayType.WEEKEND), SUNDAY(PayType.WEEKEND);
+       private final PayType payType;
+       PayrollDay(PayType payType) { this.payType = payType; }
+       PayrollDay() { this(PayType.WEEKDAY); }  // Default
+       int pay(int minutesWorked, int payRate) {
+           return payType.pay(minutesWorked, payRate);
+}
+       // The strategy enum type
+       private enum PayType {
+           WEEKDAY {
+               int overtimePay(int minsWorked, int payRate) {
+                   return minsWorked <= MINS_PER_SHIFT ? 0 :
+                     (minsWorked - MINS_PER_SHIFT) * payRate / 2;
+} },
+           WEEKEND {
+               int overtimePay(int minsWorked, int payRate) {
+                   return minsWorked * payRate / 2;
+               }
+};
+           abstract int overtimePay(int mins, int payRate);
+           private static final int MINS_PER_SHIFT = 8 * 60;
+           int pay(int minsWorked, int payRate) {
+               int basePay = minsWorked * payRate;
+               return basePay + overtimePay(minsWorked, payRate);
+} }
+}
+  总之，枚举类型相对于int常量的优势是引人注目的。枚举更具可读性、更安全、更强大。许多枚举不需要显式的构造函数或成员，但其他枚举则可以从将数据与每个常量关联并提供其行为受该数据影响的方法中获益。很少有枚举能从将多个行为关联到一个方法中获益。
+  在这种比较少见的情况下，最好使用特定于常量的方法，而不要使用那些打开自己值的枚举。如果某些枚举常量(但不是所有)具有相同的行为，请考虑策略枚举模式。
+  
+  35、使用实例字段而不是序号
+  幸运的是，这些问题有一个简单的解决方案。决不要从枚举的序数派生与枚举相关的值;将它存储在一个实例字段:
+  
+   public enum Ensemble {
+       SOLO(1), DUET(2), TRIO(3), QUARTET(4), QUINTET(5),
+       SEXTET(6), SEPTET(7), OCTET(8), DOUBLE_QUARTET(8),
+       NONET(9), DECTET(10), TRIPLE_QUARTET(12);
+        private final int numberOfMusicians;
+        Ensemble(int size) { this.numberOfMusicians = size; } public int numberOfMusicians() { return numberOfMusicians; }
+        }
+  Enum规范对序数有这样的描述:“大多数程序员不会使用这种方法。它被设计用于通用的基于枚举的数据结构，如EnumSet和EnumMap。
+  除非您正在用这个字符编写代码，否则最好完全避免使用序号方法。
+  
+  36、使用EnumSet而不是位字段
+  总之，仅仅因为一个枚举类型将在集合中使用，就没有理由用位字段来表示它。
+  EnumSet类结合了bit字段的一致性和性能，以及项目34中描述的枚举类型的所有优点。
+  EnumSet的一个真正缺点是，与Java 9一样，它不可能创建不可变的EnumSet，但这可能会在即将发布的版本中得到纠正。同时，可以用集合包装EnumSet。
+  不可修改，但简洁性和性能将受到影响。
