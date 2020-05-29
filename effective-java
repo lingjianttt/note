@@ -475,3 +475,6 @@ public class Favorites {
   EnumSet类结合了bit字段的一致性和性能，以及项目34中描述的枚举类型的所有优点。
   EnumSet的一个真正缺点是，与Java 9一样，它不可能创建不可变的EnumSet，但这可能会在即将发布的版本中得到纠正。同时，可以用集合包装EnumSet。
   不可修改，但简洁性和性能将受到影响。
+  
+  37、使用EnumMap而不是序号索引
+  
